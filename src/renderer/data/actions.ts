@@ -68,6 +68,7 @@ import Tag from "../data/Tag";
 import SceneGrid from "./SceneGrid";
 import Playlist from "./Playlist";
 import CaptionScript from "./CaptionScript";
+import SceneGridCell from "./SceneGridCell";
 
 type State = typeof defaultInitialState;
 
@@ -558,11 +559,11 @@ export function deleteScene(state: State, scene: Scene): Object {
   const newGrids = state.grids;
   for (let g of newGrids) {
     for (let row of g.grid) {
-      row = row.map((sceneID) => {
-        if (sceneID == scene.id) {
-          return -1;
+      row = row.map((cell) => {
+        if (cell.sceneID == scene.id) {
+          return new SceneGridCell();
         } else {
-          return sceneID;
+          return cell;
         }
       });
     }
@@ -975,7 +976,7 @@ export function addGrid(state: State): Object {
   let grid = new SceneGrid({
     id: id,
     name: "New Grid",
-    grid: [[-1]],
+    grid: [[new SceneGridCell()]],
   });
   return {
     grids: state.grids.concat([grid]),

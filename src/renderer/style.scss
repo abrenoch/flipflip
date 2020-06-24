@@ -40,3 +40,11 @@ div.CreatableSelect {
 .CodeMirror-linenumber {
   cursor: pointer;
 }
+
+.react-draggable {
+  z-index: 2;
+}
+
+.react-draggable-dragging {
+  z-index:1;
+}

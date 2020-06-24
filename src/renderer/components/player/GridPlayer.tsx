@@ -83,8 +83,8 @@ class GridPlayer extends React.Component {
   readonly props: {
     classes: any,
     config: Config,
-    grid: SceneGrid,
-    scenes: Array<Scene>,
+    scene: SceneGrid,
+    allScenes: Array<Scene>,
     theme: Theme,
     cache(i: HTMLImageElement | HTMLVideoElement): void,
     getTags(source: string): Array<Tag>,
@@ -95,10 +95,10 @@ class GridPlayer extends React.Component {
 
   readonly state = {
     appBarHover: false,
-    height: this.props.grid.grid && this.props.grid.grid.length > 0 &&
-    this.props.grid.grid[0].length ? this.props.grid.grid.length : 1,
-    width: this.props.grid.grid && this.props.grid.grid.length > 0 &&
-    this.props.grid.grid[0].length > 0 ? this.props.grid.grid[0].length : 1,
+    height: this.props.scene.grid && this.props.scene.grid.length > 0 &&
+    this.props.scene.grid[0].length ? this.props.scene.grid.length : 1,
+    width: this.props.scene.grid && this.props.scene.grid.length > 0 &&
+    this.props.scene.grid[0].length > 0 ? this.props.scene.grid[0].length : 1,
   };
 
   _appBarTimeout: any = null;
@@ -142,7 +142,7 @@ class GridPlayer extends React.Component {
 
             <div className={classes.fill}/>
             <Typography component="h1" variant="h4" color="inherit" noWrap className={classes.title}>
-              {this.props.grid.name}
+              {this.props.scene.name}
             </Typography>
             <div className={classes.fill}/>
 
@@ -163,30 +163,36 @@ class GridPlayer extends React.Component {
           <Container maxWidth={false} className={classes.container}>
             <div className={classes.grid}
                  style={{gridTemplateColumns: gridTemplateColumns, gridTemplateRows: gridTemplateRows}}>
-              {this.props.grid.grid.map((row, rowIndex) =>
+              {this.props.scene.grid.map((row, rowIndex) =>
                 <React.Fragment key={rowIndex}>
-                  {row.map((sceneID, colIndex) => {
-                    const scene = this.props.scenes.find((s) => s.id == sceneID);
-                    return (
-                      <div className={classes.gridCell} key={colIndex}>
-                        {scene && (
-                          <Player
-                            preventSleep={rowIndex == 0 && colIndex == 0}
-                            config={this.props.config}
-                            scene={scene}
-                            gridView
-                            scenes={this.props.scenes}
-                            theme={this.props.theme}
-                            tutorial={null}
-                            cache={this.props.cache.bind(this)}
-                            getTags={this.props.getTags.bind(this)}
-                            goBack={this.props.goBack.bind(this)}
-                            setCount={this.props.setCount.bind(this)}
-                            systemMessage={this.props.systemMessage.bind(this)}
-                          />
-                        )}
-                      </div>
-                    );
+                  {row.map((cell, colIndex) => {
+                    if (cell.sceneID) {
+                      const scene = this.props.allScenes.find((s) => s.id == cell.sceneID);
+                      return (
+                        <div className={classes.gridCell} key={colIndex}>
+                          {scene && (
+                            <Player
+                              preventSleep={rowIndex == 0 && colIndex == 0}
+                              config={this.props.config}
+                              scene={scene}
+                              gridView
+                              scenes={this.props.allScenes}
+                              theme={this.props.theme}
+                              tutorial={null}
+                              cache={this.props.cache.bind(this)}
+                              getTags={this.props.getTags.bind(this)}
+                              goBack={this.props.goBack.bind(this)}
+                              setCount={this.props.setCount.bind(this)}
+                              systemMessage={this.props.systemMessage.bind(this)}
+                            />
+                          )}
+                        </div>
+                      );
+                    } else if (cell.sceneCopy) {
+                      return <div/>
+                    } else {
+                      return <div/>
+                    }
                   })}
                 </React.Fragment>
               )}
